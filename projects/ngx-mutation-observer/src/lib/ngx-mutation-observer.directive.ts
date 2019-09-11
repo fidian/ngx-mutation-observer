@@ -51,8 +51,8 @@ export class NgxMutationObserverDirective
                 };
             }
 
-            this.observer = new MutationObserver(mutationRecord => {
-                this.onMutation.emit(mutationRecord);
+            this.observer = new MutationObserver(mutations => {
+                this.onMutation.emit(mutations);
             });
             this.observer.observe(this.elementRef.nativeElement, config);
             this.observing = true;

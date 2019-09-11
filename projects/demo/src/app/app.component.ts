@@ -40,6 +40,7 @@ export class AppComponent implements AfterViewInit, OnInit {
     private updateSize(triggeredBy: string) {
         this.heightReported = this.resizingElement.nativeElement.clientHeight;
         this.widthReported = this.resizingElement.nativeElement.clientWidth;
+        console.log(this.widthReported, 'x', this.heightReported);
         this.triggeredBy = triggeredBy;
     }
 }
