@@ -9,6 +9,7 @@ import {
     OnDestroy,
     Optional,
     Output,
+    SimpleChanges,
     SkipSelf
 } from '@angular/core';
 
@@ -17,10 +18,13 @@ import {
 })
 export class NgxMutationObserverDirective
     implements AfterViewInit, OnChanges, OnDestroy {
-    @Input() mutationConfig: MutationObserverInit;
+    @Input() mutationConfig: MutationObserverInit = {
+        attributes: true,
+        characterData: true,
+        childList: true
+    };
     @Output() onMutation = new EventEmitter<MutationRecord[]>();
-    private observing = false;
-    private observer: MutationObserver;
+    private observer: MutationObserver | null = null;
 
     constructor(private readonly elementRef: ElementRef) {}
 
@@ -28,8 +32,8 @@ export class NgxMutationObserverDirective
         this.observe();
     }
 
-    ngOnChanges(changes) {
-        if (this.observing && (changes.mutationConfig || changes.onMutation)) {
+    ngOnChanges(changes: SimpleChanges) {
+        if (this.observer && (changes['mutationConfig'] || changes['onMutation'])) {
             this.unobserve();
             this.observe();
         }
@@ -40,29 +44,32 @@ export class NgxMutationObserverDirective
     }
 
     private observe() {
-        if (!this.observing) {
-            let config = this.mutationConfig;
-
-            if (!config || typeof config !== 'object') {
-                config = {
-                    attributes: true,
-                    characterData: true,
-                    childList: true
-                };
-            }
-
-            this.observer = new MutationObserver(mutations => {
-                this.onMutation.emit(mutations);
-            });
-            this.observer.observe(this.elementRef.nativeElement, config);
-            this.observing = true;
+        if (this.observer) {
+            return;
         }
+
+        let config = this.mutationConfig;
+
+        if (!config || typeof config !== 'object') {
+            config = {
+                attributes: true,
+                characterData: true,
+                childList: true
+            };
+        }
+
+        this.observer = new MutationObserver(mutations => {
+            this.onMutation.emit(mutations);
+        });
+        this.observer.observe(this.elementRef.nativeElement, config);
     }
 
     private unobserve() {
-        if (this.observing) {
-            this.observer.disconnect();
-            this.observing = false;
+        if (!this.observer) {
+            return;
         }
+
+        this.observer.disconnect();
+        this.observer = null;
     }
 }
