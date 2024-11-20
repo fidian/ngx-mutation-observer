@@ -1,6 +1,6 @@
 # NgxMutationObserver
 
-Angular 18.x library to monitor changes to elements. Uses MutationObserver to do the work.
+Angular 19.x library to monitor changes to elements. Uses MutationObserver to do the work.
 
 If you're only looking for a way to see if elements are visible, I suggest checking out [ngx-visibility](https://github.com/fidian/ngx-visibility) instead. This doesn't notice everything - for instance, an element whose width is set to "50%" will not report a mutation when the window is resized or when a scrollbar is visible. Instead, a mutation is reported when the width is changed from "50%" to "75%" or to "128px".
 

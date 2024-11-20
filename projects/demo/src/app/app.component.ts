@@ -1,14 +1,17 @@
+import { NgxMutationObserverDirective } from '../../../ngx-mutation-observer/src/public-api';
+
 import {
     AfterViewInit,
     Component,
     ElementRef,
     OnInit,
-    ViewChild
+    ViewChild,
 } from '@angular/core';
 
 @Component({
     selector: 'app-root',
-    templateUrl: './app.component.html'
+    templateUrl: './app.component.html',
+    imports: [NgxMutationObserverDirective],
 })
 export class AppComponent implements AfterViewInit, OnInit {
     @ViewChild('resizingElement', { static: false })

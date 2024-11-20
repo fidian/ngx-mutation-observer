@@ -10,18 +10,19 @@ import {
     Optional,
     Output,
     SimpleChanges,
-    SkipSelf
+    SkipSelf,
 } from '@angular/core';
 
 @Directive({
-    selector: '[onMutation]'
+    selector: '[onMutation]',
 })
 export class NgxMutationObserverDirective
-    implements AfterViewInit, OnChanges, OnDestroy {
+    implements AfterViewInit, OnChanges, OnDestroy
+{
     @Input() mutationConfig: MutationObserverInit = {
         attributes: true,
         characterData: true,
-        childList: true
+        childList: true,
     };
     @Output() onMutation = new EventEmitter<MutationRecord[]>();
     private observer: MutationObserver | null = null;
@@ -33,7 +34,10 @@ export class NgxMutationObserverDirective
     }
 
     ngOnChanges(changes: SimpleChanges) {
-        if (this.observer && (changes['mutationConfig'] || changes['onMutation'])) {
+        if (
+            this.observer &&
+            (changes['mutationConfig'] || changes['onMutation'])
+        ) {
             this.unobserve();
             this.observe();
         }
@@ -54,7 +58,7 @@ export class NgxMutationObserverDirective
             config = {
                 attributes: true,
                 characterData: true,
-                childList: true
+                childList: true,
             };
         }
 
