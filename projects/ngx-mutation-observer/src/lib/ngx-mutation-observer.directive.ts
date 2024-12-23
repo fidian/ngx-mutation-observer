@@ -1,5 +1,5 @@
 import {
-    AfterViewInit,
+    afterNextRender,
     Directive,
     ElementRef,
     EventEmitter,
@@ -17,7 +17,7 @@ import {
     selector: '[onMutation]',
 })
 export class NgxMutationObserverDirective
-    implements AfterViewInit, OnChanges, OnDestroy
+    implements OnChanges, OnDestroy
 {
     @Input() mutationConfig: MutationObserverInit = {
         attributes: true,
@@ -27,10 +27,10 @@ export class NgxMutationObserverDirective
     @Output() onMutation = new EventEmitter<MutationRecord[]>();
     private observer: MutationObserver | null = null;
 
-    constructor(private readonly elementRef: ElementRef) {}
-
-    ngAfterViewInit() {
-        this.observe();
+    constructor(private readonly elementRef: ElementRef) {
+        afterNextRender(() => {
+            this.observe();
+        });
     }
 
     ngOnChanges(changes: SimpleChanges) {
