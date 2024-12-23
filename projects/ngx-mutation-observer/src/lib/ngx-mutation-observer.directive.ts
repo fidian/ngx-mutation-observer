@@ -5,6 +5,7 @@ import {
     EventEmitter,
     Host,
     Input,
+    NgZone,
     OnChanges,
     OnDestroy,
     Optional,
@@ -16,9 +17,7 @@ import {
 @Directive({
     selector: '[onMutation]',
 })
-export class NgxMutationObserverDirective
-    implements OnChanges, OnDestroy
-{
+export class NgxMutationObserverDirective implements OnChanges, OnDestroy {
     @Input() mutationConfig: MutationObserverInit = {
         attributes: true,
         characterData: true,
@@ -27,7 +26,10 @@ export class NgxMutationObserverDirective
     @Output() onMutation = new EventEmitter<MutationRecord[]>();
     private observer: MutationObserver | null = null;
 
-    constructor(private readonly elementRef: ElementRef) {
+    constructor(
+        private readonly elementRef: ElementRef,
+        private readonly ngZone: NgZone
+    ) {
         afterNextRender(() => {
             this.observe();
         });
@@ -63,7 +65,9 @@ export class NgxMutationObserverDirective
         }
 
         this.observer = new MutationObserver(mutations => {
-            this.onMutation.emit(mutations);
+            this.ngZone.run(() => {
+                this.onMutation.emit(mutations);
+            });
         });
         this.observer.observe(this.elementRef.nativeElement, config);
     }
